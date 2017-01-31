@@ -2,15 +2,34 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>Document</title>
-</head>
-<body>
-	<h1>Server seteado</h1>
-
+	<title><%= title %></title>
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/css/theme/style.css">
+	<link rel='stylesheet' href='/css/style.css' />
+	
+	<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
 	<script src="/socket.io/socket.io.js"></script>
-    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
-    <script>
-    	var socket = io('http://localhost:3001/');
-    </script>
+	<script src="/js/index.js"></script>
+</head>
+<body>	
+	<div class="container">
+		<div class="row">
+			<div class="col-xs-5 col-xs-offset-4">
+				<a href="#" class="linkto btn btn-large">
+					<span>Crear nueva sala</span>
+				</a>
+			</div>
+		</div>
+		<hr/>
+		<div class="row">
+			<div class="col-xs-8 col-xs-offset-2" style="text-align: center">
+				<h2>Entrar en una sala existente</h2>
+				<ul id="list-rooms"></ul>
+			</div>
+		</div>
+	</div>
+	
+    
 </body>
 </html>
