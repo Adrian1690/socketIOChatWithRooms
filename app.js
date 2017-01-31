@@ -24,7 +24,7 @@ app.set('view engine', 'ejs');
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', routes.index);
-//app.get('users', routes.user.list);
+app.get('users', routes.user.list);
 
 io.on('connect', function(socket){
 	connections.push(socket);
