@@ -51,13 +51,13 @@ io.on('connect', function(socket){
 		// set username to socket
 		socket.set('username', name, function(){
 			// emit new name only for user in that room
-			socket.in(room).emit( 
+			socket.in(room).emit( 'name changed'
 				{ 
 					name : name,
 					time : time
 				}
 			);
-			socket.broadcast.to(room).emit('user change name', 
+			socket.broadcast.to(room).emit('user changed name', 
 				{
 					userId : userid, 
 					name : name, 

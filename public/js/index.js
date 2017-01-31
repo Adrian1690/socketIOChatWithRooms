@@ -14,6 +14,7 @@ class MainRoom {
 
 		this.onStart = this.onStart.bind(this)();
 		this.addEventListeners();
+		this.onSockets();
 	}
 
 	addEventListeners(){
@@ -28,7 +29,12 @@ class MainRoom {
 		this.onRoomSocket();
 	}
 
-	cleanListRoom(){
+	onSockets(){
+		this.onRoomSocket();
+		this.onNewRoomSocket();
+	}
+
+	cleanListRoom(){	
 		this.listRoomsEl.innerHtml = '';
 	}
 
