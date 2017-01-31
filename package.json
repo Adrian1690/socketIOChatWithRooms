@@ -1,0 +1,13 @@
+{
+  "name": "Socket-IO-Chat-With-Rooms",
+  "version": "0.0.1",
+  "description": "Real time aplicacion with socket io",
+  "dependencies": {
+    "ejs": "^2.5.5",
+    "express": "^4.14.1",
+    "socket.io": "^1.7.2"
+  },
+  "scripts": {
+    "start": "node app.js"
+  }
+}
