@@ -2,10 +2,10 @@
 class SocketHandler {
 	
 	constructor(){
-		console.log('ready for the action');
+		
 
-		this.socket = io('http://localhost:3001/');
-		this.room = window.location.href.split('/')[4];
+		this.socket = socket;
+		this.room = room;
 
 		//Elements
 		this.contentChatEl = document.querySelector('.content-chat');
@@ -34,7 +34,7 @@ class SocketHandler {
 	}
 
 	onStart(){
-
+		console.log('on socket handler');
 	}
 
 	onSockets(){
@@ -66,7 +66,7 @@ class SocketHandler {
 	}
 
 	onUserChangeNameSocket(){
-		this.socket('user changed name', (data) => {
+		this.socket.on('user changed name', (data) => {
 			this.mountStatusMessage(`El usuario <strong> ${data.name} </strong>`);
 		});
 	}
@@ -106,4 +106,5 @@ class SocketHandler {
 		element.scroolTop = element.scroolHeight;
 	}
 }
-window.addEventListener('load', () => new SocketHandler)
+
+window.addEventListener('load', () => new SocketHandler() );

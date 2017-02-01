@@ -11,6 +11,10 @@
 	<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
 	<script src="/socket.io/socket.io.js"></script>
 	
+	<script>
+		var socket = io('http://localhost:3001/');
+		var room = window.location.href.split('/')[4];
+	</script>
 	<script src="/js/handlebars-v1.3.0.js"></script>
 	<script src="/js/socket_handler.js"></script>
 	<script src="/js/clientside.js"></script>
