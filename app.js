@@ -34,21 +34,26 @@ io.on('connect', function(socket){
 	var userid = socket.id;
 	socket.emit('ready'); // emit ready message himself
 
-	console.log(io.sockets.adapter.rooms);
+	//console.log(io.sockets.adapter.rooms);
 	socket.emit('rooms', io.sockets.adapter.rooms);  // io.sockets.adapter.rooms => get all rooms from io space
 
 	socket.on('join', function (room){
+		console.log('joinr to ' + room );
 		socket.join(room);
 		socket.broadcast.emit('new room', room); // emit all user connected message join user room
 	})
 
 	//change username
 	socket.on('change name', function(data){
+		console.log('in change name');
 		var name = data.name;
 		var room = data.room;
 		var time = util.getCurrentTime();
 
-		// set username to socket
+		
+		// Before 1.0 socket io
+		/*
+		
 		socket.set('username', name, function(){
 			// emit new name only for user in that room
 			socket.in(room).emit( 'name changed',
@@ -65,6 +70,20 @@ io.on('connect', function(socket){
 				}
 			);
 		}); 
+		*/
+
+		
+		socket.username = name; // set username to socket
+		console.log(room, socket.username);
+		socket.to(room).emit('name changed', { name : name, time : time });
+		socket.broadcast.to(room)
+			.emit('user changed name', 
+				{
+					userId : userid, 
+					name : name, 
+					time : time 
+				}
+			);
 	});
 
 	socket.on('send message', function(data){
@@ -72,12 +91,20 @@ io.on('connect', function(socket){
 		var time = util.getCurrentTime();
 		var room = data.room;
 		var name = '';
+
+		// Before 1.0 version
+		/*
 		socket.get('username', function(err, username){
 			name = username ? username : userid;
 
 			socket.in(room).emit('message sent', { message: message, time: time});
 			socket.broadcast.to(room).emit('message sent by user', {message: message, name: name, time: time});
 		});
+		*/
+	
+		name = socket.username ? socket.username : userid;
+		socket.in(room).emit('message sent', { message: message, time: time});
+		socket.broadcast.to(room).emit('message sent by user', {message: message, name: name, time: time});
 	});
 
 	socket.on('disconnect', function(){
@@ -93,11 +120,18 @@ io.on('connect', function(socket){
 	      	// For each room the user is in, excluding his own room
 		    socket.leave(room);
 
+		    /* Before 1.0 */
+		    /*
 		    socket.get('username', function(err, username){
 		    	if(username){
 		    		socket.broadcast.to(room).emit('user leave room', {name: username});
 		    	}
 		    });  
+		    */
+
+		    if(socket.username){
+		    	socket.broadcast.to(room).emit('user leave room', { name : socket.username });
+		    }
 		}    
 	    //});
 		

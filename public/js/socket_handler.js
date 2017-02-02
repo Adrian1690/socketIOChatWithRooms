@@ -1,9 +1,31 @@
+// sending to sender-client only
+//socket.emit('message', "this is a test");
 
+// sending to all clients, include sender
+//io.emit('message', "this is a test");
+
+// sending to all clients except sender
+//socket.broadcast.emit('message', "this is a test");
+
+// sending to all clients in 'game' room(channel) except sender
+//socket.broadcast.to('game').emit('message', 'nice game');
+
+// sending to all clients in 'game' room(channel), include sender
+//io.in('game').emit('message', 'cool game');
+
+// sending to sender client, only if they are in 'game' room(channel)
+//socket.to('game').emit('message', 'enjoy the game');
+
+// sending to all clients in namespace 'myNamespace', include sender
+//io.of('myNamespace').emit('message', 'gg');
+
+// sending to individual socketid
+//socket.broadcast.to(socketid).emit('message', 'for your eyes only');
+//
 class SocketHandler {
 	
 	constructor(){
 		
-
 		this.socket = socket;
 		this.room = room;
 
@@ -38,6 +60,7 @@ class SocketHandler {
 	}
 
 	onSockets(){
+		this.onReadySocket();
 		this.onNameChangedSocket();
 		this.onMessageSentSocket();
 		this.onUserChangeNameSocket();
@@ -47,16 +70,18 @@ class SocketHandler {
 
 	onReadySocket() {
 		this.socket.on('ready', (data) => {
+			console.log('ready socket');
 			this.socket.emit('join', room);
 		});
 	}
 
 	onNameChangedSocket(){
 		this.socket.on('name changed',(data) => {
+			console.log('on name changed socket');
 			this.mountStatusMessage(`Nombre, <strong> ${data.name} </strong>`);
+			this.contentChatEl.style.display = 'block';
+			this.rowAltName.style.display = 'hide';
 		});
-		this.contentChatEl.style.display = 'block';
-		this.rowAltName.style.display = 'hide';
 	}
 
 	onMessageSentSocket(){
@@ -67,6 +92,7 @@ class SocketHandler {
 
 	onUserChangeNameSocket(){
 		this.socket.on('user changed name', (data) => {
+			console.log('on user changed name');
 			this.mountStatusMessage(`El usuario <strong> ${data.name} </strong>`);
 		});
 	}

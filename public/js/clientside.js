@@ -35,10 +35,16 @@ class ClientSide {
 		//console.log(this.nameEl.val());
 		this.altNameForm.submit( () => {
 			let name = this.nameEl.val();
-			socket.emit('change name', {name: this.nameEl.val(), room: this.room});
+			this.socket.emit('change name', {name: this.nameEl.val(), room: this.room});
 			this.nameEl.attr('disabled', 'disabled');
 			this.altNameForm.children('button').hide();
+			console.log('fire submit');
 			return false;
+		});
+
+		socket.on('name changed',(data) => {
+			console.log('on name changed');
+			
 		});
 	}
 
