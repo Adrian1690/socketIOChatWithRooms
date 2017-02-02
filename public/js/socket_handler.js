@@ -70,7 +70,7 @@ class SocketHandler {
 
 	onReadySocket() {
 		this.socket.on('ready', (data) => {
-			console.log('ready socket');
+			console.log('ready socket in room ' + room);
 			this.socket.emit('join', room);
 		});
 	}

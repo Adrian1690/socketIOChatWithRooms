@@ -3,9 +3,9 @@
 class MainRoom {
 	constructor(){
 		
-		this.socket = io('http://localhost:3001/');
+		this.socket = socket;
 		this.linkToEl = document.querySelector('.linkto');
-		this.listRoomsEl = document.querySelector('#list-rooms');
+		this.listRoomsEl = $('#list-rooms');
 
 		this.generateGuid = this.generateGuid.bind(this);
 		this.cleanListRomm = this.cleanListRoom.bind(this);
@@ -25,41 +25,58 @@ class MainRoom {
 		// Init Socket IO Client
 		
 		this.linkToEl.setAttribute('href', '/r/' + this.generateGuid() );
-
-		this.onRoomSocket();
 	}
 
 	onSockets(){
+		this.onReadySocket();
 		this.onRoomSocket();
 		this.onNewRoomSocket();
 	}
 
 	cleanListRoom(){	
-		this.listRoomsEl.innerHtml = '';
+		// no borra
+		this.listRoomsEl.val('');
 	}
+
+	onReadySocket() {
+		this.socket.on('ready', (data) => {
+			console.log('ready socket');
+			//this.socket.emit('join', room);
+		});
+	}
+
 
 	onRoomSocket(){
 		this.socket.on('rooms', (data) => {
+			console.log('on get rooms socket=>', data);
 			let keys = Object.keys(data); // get keys in array from data
 			let lenKeys = keys.length;
 
+			console.log(keys, lenKeys);
 			this.cleanListRoom(); // clean List
 
-			for( let i=1; i < lenKeys; i++){
+			for( let i=0; i < lenKeys; i++){
+
 				let rLink = keys[i].split("/")[1];
 
 				const li = document.createElement('li');
 				const a = document.createElement('a');
 				a.href = "/r/" + keys[i];
-				a.innerHtml = rLink;
+				a.textContent = keys[i];
+				//console.log(rLink);
 				li.appendChild(a);
-				this.listRoomsEl.appendChild(li);
+
+				this.listRoomsEl.append(li);
 			}
 		});
 	}
 
 	onNewRoomSocket(){
-		this.socket.on('newRoom', (room) => {
+		
+		//this.listRoomsEl.html("<li><a href='/r/'>aaaa</a></li>");
+		console.log(this.listRoomsEl);
+		this.socket.on('new room', (room) => {
+			console.log(room);
 			this.listRoomsEl.innerHtml = '<li><a href="/r/' + room + '">' + room + '</a></li>';
 		});
 	}

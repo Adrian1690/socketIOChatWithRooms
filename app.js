@@ -27,6 +27,10 @@ app.get('/', routes.index);
 app.get('users', routes.user.list);
 app.get('/r/:id', routes.room);
 
+http.listen(app.get('port'), function (){
+	console.log('App listen port : ' + app.get('port'));
+});
+
 io.on('connect', function(socket){
 	connections.push(socket);
 	console.log('user connected => ' + connections.length);
@@ -34,11 +38,11 @@ io.on('connect', function(socket){
 	var userid = socket.id;
 	socket.emit('ready'); // emit ready message himself
 
-	//console.log(io.sockets.adapter.rooms);
+	console.log(io.sockets.adapter.rooms);
 	socket.emit('rooms', io.sockets.adapter.rooms);  // io.sockets.adapter.rooms => get all rooms from io space
 
 	socket.on('join', function (room){
-		console.log('joinr to ' + room );
+		console.log('join to ' + room );
 		socket.join(room);
 		socket.broadcast.emit('new room', room); // emit all user connected message join user room
 	})
@@ -112,7 +116,7 @@ io.on('connect', function(socket){
 		// this returns a list of all rooms this user is in
 		//var rooms = io.sockets.adapter.roomClients[socket.id];
 		console.log('=========== socket rooms =========');
-		console.log(socket.rooms);
+		//console.log(socket.rooms);
 		
 		var rooms = socket.rooms;
 		//socket.rooms.forEach(function(room){
@@ -141,9 +145,6 @@ io.on('connect', function(socket){
 		setTimeout(function(){
 			socket.broadcast.emit('rooms', io.sockets.adapter.rooms);
 		}, 1000)
-	})
+	});
 })
 
-http.listen(app.get('port'), function (){
-	console.log('App listen port : ' + app.get('port'));
-});
