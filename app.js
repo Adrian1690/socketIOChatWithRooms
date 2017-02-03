@@ -36,14 +36,16 @@ io.on('connect', function(socket){
 	console.log('user connected => ' + connections.length);
 
 	var userid = socket.id;
-	socket.emit('ready'); // emit ready message himself
+	socket.emit('ready', {}); // emit ready message himself
+	console.log('Ready emited. Socket id', socket.id);
 
-	console.log(io.sockets.adapter.rooms);
+	//console.log(io.sockets.adapter.rooms);
 	socket.emit('rooms', io.sockets.adapter.rooms);  // io.sockets.adapter.rooms => get all rooms from io space
 
 	socket.on('join', function (room){
-		console.log('join to ' + room );
+		console.log(socket.id);
 		socket.join(room);
+		console.log('The socket ' + socket.id + ' join to ' + room );
 		socket.broadcast.emit('new room', room); // emit all user connected message join user room
 	})
 
@@ -80,6 +82,7 @@ io.on('connect', function(socket){
 		socket.username = name; // set username to socket
 		console.log(room, socket.username);
 		socket.to(room).emit('name changed', { name : name, time : time });
+		console.log('name changed emited');
 		socket.broadcast.to(room)
 			.emit('user changed name', 
 				{
@@ -107,7 +110,7 @@ io.on('connect', function(socket){
 		*/
 	
 		name = socket.username ? socket.username : userid;
-		socket.in(room).emit('message sent', { message: message, time: time});
+		socket.to(room).emit('message sent', { message: message, time: time});
 		socket.broadcast.to(room).emit('message sent by user', {message: message, name: name, time: time});
 	});
 

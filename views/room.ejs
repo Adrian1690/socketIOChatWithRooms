@@ -15,15 +15,6 @@
 		var socket = io('http://localhost:3001/');
 		var room = window.location.href.split('/')[4];
 
-		socket.on('name changed', (data) => {
-			console.log('on name changed socket');
-		});
-
-		socket.on('ready', (data) => {
-			console.log('ready socket');
-			socket.emit('join', room);
-		});
-
 	</script>
 	<script src="/js/handlebars-v1.3.0.js"></script>
 	<script src="/js/socket_handler.js"></script>

@@ -22,6 +22,9 @@
 // sending to individual socketid
 //socket.broadcast.to(socketid).emit('message', 'for your eyes only');
 //
+//
+
+
 class SocketHandler {
 	
 	constructor(){
@@ -30,11 +33,11 @@ class SocketHandler {
 		this.room = room;
 
 		//Elements
-		this.contentChatEl = document.querySelector('.content-chat');
-		this.rowAltName = document.querySelector('.row-alterar-name');
-		this.sourceStatus = document.querySelector('#status-template');
-		this.sourceMessage = document.querySelector('#message-template');
-		this.coments = document.querySelector('#comments');
+		this.contentChatEl = $('.content-chat');
+		this.rowAltName = $('.row-alterar-name');
+		this.sourceStatus = $('#status-template');
+		this.sourceMessage = $('#message-template');
+		this.coments = $('#comments');
 		this.olComents = document.querySelector('#comments > ol');
 		//Methods
 		this.onReadySocket = this.onReadySocket.bind(this);
@@ -47,6 +50,7 @@ class SocketHandler {
 		this.scroolBottomChat = this.scroolBottomChat.bind(this);
 		
 		this.onStart = this.onStart.bind(this)();
+
 		this.addEventListeners();
 		this.onSockets();
 	}
@@ -56,7 +60,7 @@ class SocketHandler {
 	}
 
 	onStart(){
-		console.log('on socket handler');
+		//console.log('on socket handler');
 	}
 
 	onSockets(){
@@ -69,48 +73,52 @@ class SocketHandler {
 	}
 
 	onReadySocket() {
-		this.socket.on('ready', (data) => {
-			console.log('ready socket in room ' + room);
-			this.socket.emit('join', room);
+		this.socket.on('ready',(data) => { // check why no firee
+			console.log('ready firee ' + room);
+			console.log(this.socket.id);
+		 	this.socket.emit('join', room);
 		});
 	}
 
 	onNameChangedSocket(){
+		//console.log('on NaemChangedSocket client');
 		this.socket.on('name changed',(data) => {
-			console.log('on name changed socket');
+			console.log('name changed fire');
 			this.mountStatusMessage(`Nombre, <strong> ${data.name} </strong>`);
-			this.contentChatEl.style.display = 'block';
-			this.rowAltName.style.display = 'hide';
+			console.log(this.contentChatEl, this.rowAltName);
+			this.contentChatEl.show()
+			this.rowAltName.hide();
 		});
 	}
 
 	onMessageSentSocket(){
 		this.socket.on('message sent', (data) => {
-			mountChatMessage('Me', data.message, data.time);
+			this.mountChatMessage('Me', data.message, data.time);
 		});
 	}
 
 	onUserChangeNameSocket(){
 		this.socket.on('user changed name', (data) => {
-			console.log('on user changed name');
+			console.log('user changed name fire');
 			this.mountStatusMessage(`El usuario <strong> ${data.name} </strong>`);
 		});
 	}
 
 	onMessageSentByUserSocket(){
 		this.socket.on('message sent by user', (data) => {
-			mountChatMessage(data.name, data.message, data.time);
+			this.mountChatMessage(data.name, data.message, data.time);
 		});
 	}
 
 	onUserLeaveRoomSocket(){
 		this.socket.on('user leave room', (data) => {
-			mountStatusMessage(`El usuario <strong> ${data.name} </strong>`);
+			this.mountStatusMessage(`El usuario <strong> ${data.name} </strong>`);
 		});
 	}
 
 	mountStatusMessage(message){
-		let template = Handlebars.compile(this.sourceStatus.innerHtml);
+		console.log(message);
+		let template = Handlebars.compile(this.sourceStatus.html());
 		let context = {message : message};
 		let html =  template(context);
 
@@ -119,7 +127,7 @@ class SocketHandler {
 	}
 
 	mountChatMessage(author, message, time){
-		let template = Handlebars.compile(this.sourceMessage.innerHtml);
+		let template = Handlebars.compile(this.sourceMessage.html());
 		let context = {author: author, body:message, time: time};
 		let html = template(context);
 
@@ -128,9 +136,12 @@ class SocketHandler {
 	}
 
 	scroolBottomChat(){
-		let element = this.comments[0];
+		console.log(this.coments);
+		let element = this.coments[0];
 		element.scroolTop = element.scroolHeight;
 	}
 }
 
-window.addEventListener('load', () => new SocketHandler() );
+$(document).ready(function(){
+	new SocketHandler();
+});

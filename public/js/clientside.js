@@ -25,7 +25,7 @@ class ClientSide {
 	}
 
 	onStart(){
-		console.log('On Client Side');
+		//console.log('On Client Side');
 		this.roomUrl.val(window.location.href);
 		this.submitAltNameForm();
 		this.submitSendMessage();
@@ -42,10 +42,6 @@ class ClientSide {
 			return false;
 		});
 
-		socket.on('name changed',(data) => {
-			console.log('on name changed');
-			
-		});
 	}
 
 	submitSendMessage(){
@@ -58,8 +54,10 @@ class ClientSide {
 	}
 }
 
-window.addEventListener('load', () => new ClientSide() );
-
+//window.addEventListener('load', () => new ClientSide() );
+$(document).ready(function(){
+	new ClientSide();	
+});
 
 /*
 $(function(){

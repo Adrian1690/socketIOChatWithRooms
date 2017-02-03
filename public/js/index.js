@@ -28,7 +28,6 @@ class MainRoom {
 	}
 
 	onSockets(){
-		this.onReadySocket();
 		this.onRoomSocket();
 		this.onNewRoomSocket();
 	}
@@ -38,14 +37,7 @@ class MainRoom {
 		this.listRoomsEl.val('');
 	}
 
-	onReadySocket() {
-		this.socket.on('ready', (data) => {
-			console.log('ready socket');
-			//this.socket.emit('join', room);
-		});
-	}
-
-
+	
 	onRoomSocket(){
 		this.socket.on('rooms', (data) => {
 			console.log('on get rooms socket=>', data);
@@ -76,8 +68,8 @@ class MainRoom {
 		//this.listRoomsEl.html("<li><a href='/r/'>aaaa</a></li>");
 		console.log(this.listRoomsEl);
 		this.socket.on('new room', (room) => {
-			console.log(room);
-			this.listRoomsEl.innerHtml = '<li><a href="/r/' + room + '">' + room + '</a></li>';
+			console.log('On room', room);
+			this.listRoomsEl.append('<li><a href="/r/' + room + '">' + room + '</a></li>');
 		});
 	}
 
