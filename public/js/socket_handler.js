@@ -24,7 +24,6 @@
 //
 //
 
-
 class SocketHandler {
 	
 	constructor(){
@@ -38,7 +37,7 @@ class SocketHandler {
 		this.sourceStatus = $('#status-template');
 		this.sourceMessage = $('#message-template');
 		this.coments = $('#comments');
-		this.olComents = document.querySelector('#comments > ol');
+		this.olComents = $('#comments > ol');
 		//Methods
 		this.onReadySocket = this.onReadySocket.bind(this);
 		this.onNameChangedSocket = this.onNameChangedSocket.bind(this);
@@ -91,21 +90,26 @@ class SocketHandler {
 		});
 	}
 
+	//broadcast
+	onUserChangeNameSocket(){
+		this.socket.on('user changed name', (data) => {
+			console.log('user changed name fire');
+			this.mountStatusMessage(`El usuario <strong> ${data.name} ingreso </strong>`);
+		});
+	}
+
 	onMessageSentSocket(){
 		this.socket.on('message sent', (data) => {
+			console.log('message sent fire');
 			this.mountChatMessage('Me', data.message, data.time);
 		});
 	}
 
-	onUserChangeNameSocket(){
-		this.socket.on('user changed name', (data) => {
-			console.log('user changed name fire');
-			this.mountStatusMessage(`El usuario <strong> ${data.name} </strong>`);
-		});
-	}
 
 	onMessageSentByUserSocket(){
 		this.socket.on('message sent by user', (data) => {
+			console.log('message sent by user fire');
+			//console.log(data.name, data.message, data.time);
 			this.mountChatMessage(data.name, data.message, data.time);
 		});
 	}
@@ -122,7 +126,7 @@ class SocketHandler {
 		let context = {message : message};
 		let html =  template(context);
 
-		this.olComents.innerHtml = html;
+		this.olComents.append(html);
 		this.scroolBottomChat();
 	}
 
@@ -131,7 +135,7 @@ class SocketHandler {
 		let context = {author: author, body:message, time: time};
 		let html = template(context);
 
-		this.olComents.innerHtml = html;
+		this.olComents.append(html);
 		this.scroolBottomChat();
 	}
 
@@ -142,6 +146,6 @@ class SocketHandler {
 	}
 }
 
-$(document).ready(function(){
+//$(document).ready(function(){
 	new SocketHandler();
-});
+//});

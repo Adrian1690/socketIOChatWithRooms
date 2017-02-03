@@ -32,18 +32,20 @@ http.listen(app.get('port'), function (){
 });
 
 io.on('connect', function(socket){
+	//console.log('===========Init Rooms ==========');
+	//console.log(io.sockets.adapter.rooms);
 	connections.push(socket);
-	console.log('user connected => ' + connections.length);
+	//console.log('user connected => ' + connections.length);
 
 	var userid = socket.id;
 	socket.emit('ready', {}); // emit ready message himself
-	console.log('Ready emited. Socket id', socket.id);
+	//console.log('Ready emited. Socket id', socket.id);
 
-	//console.log(io.sockets.adapter.rooms);
-	socket.emit('rooms', io.sockets.adapter.rooms);  // io.sockets.adapter.rooms => get all rooms from io space
+	//console.log(io.sockets.adapter);
+	//socket.emit('rooms', io.sockets.adapter.rooms);  // io.sockets.adapter.rooms => get all rooms from io space
 
 	socket.on('join', function (room){
-		console.log(socket.id);
+		//console.log(socket.id);
 		socket.join(room);
 		console.log('The socket ' + socket.id + ' join to ' + room );
 		socket.broadcast.emit('new room', room); // emit all user connected message join user room
@@ -80,9 +82,9 @@ io.on('connect', function(socket){
 
 		
 		socket.username = name; // set username to socket
-		console.log(room, socket.username);
-		socket.to(room).emit('name changed', { name : name, time : time });
-		console.log('name changed emited');
+		//console.log(room, socket.id, socket.rooms);
+		socket.emit('name changed', { name : name, time : time });
+		//console.log('name changed emited to ' + socket.id + ' to room ' + room);
 		socket.broadcast.to(room)
 			.emit('user changed name', 
 				{
@@ -94,6 +96,7 @@ io.on('connect', function(socket){
 	});
 
 	socket.on('send message', function(data){
+		console.log('in send message');
 		var message = data.message;
 		var time = util.getCurrentTime();
 		var room = data.room;
@@ -110,7 +113,9 @@ io.on('connect', function(socket){
 		*/
 	
 		name = socket.username ? socket.username : userid;
-		socket.to(room).emit('message sent', { message: message, time: time});
+		console.log(io.sockets.adapter.sids[socket.id][room]); // check if socket is in room
+		console.log('The socket ' + socket.id + ' sent menssage to ' + room );
+		socket.emit('message sent', { message: message, time: time });
 		socket.broadcast.to(room).emit('message sent by user', {message: message, name: name, time: time});
 	});
 
@@ -121,12 +126,12 @@ io.on('connect', function(socket){
 		console.log('=========== socket rooms =========');
 		//console.log(socket.rooms);
 		
-		var rooms = socket.rooms;
+		var rooms = io.sockets.adapter.sids[socket.id];
 		//socket.rooms.forEach(function(room){
 		for (var room in rooms) {	
 	      	// For each room the user is in, excluding his own room
 		    socket.leave(room);
-
+		    console.log('socket ' + socket.id + 'was left from the room' + room);
 		    /* Before 1.0 */
 		    /*
 		    socket.get('username', function(err, username){
@@ -147,6 +152,7 @@ io.on('connect', function(socket){
 
 		setTimeout(function(){
 			socket.broadcast.emit('rooms', io.sockets.adapter.rooms);
+			console.log('new room in disconnect');
 		}, 1000)
 	});
 })

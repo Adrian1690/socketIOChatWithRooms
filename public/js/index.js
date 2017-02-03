@@ -34,7 +34,7 @@ class MainRoom {
 
 	cleanListRoom(){	
 		// no borra
-		this.listRoomsEl.val('');
+		this.listRoomsEl.html('');
 	}
 
 	
@@ -48,17 +48,19 @@ class MainRoom {
 			this.cleanListRoom(); // clean List
 
 			for( let i=0; i < lenKeys; i++){
+				console.log(keys[i]);
+				if( keys[i].split('-')[4] ){
 
-				let rLink = keys[i].split("/")[1];
+					let rLink = keys[i].split("/")[1];
+					const li = document.createElement('li');
+					const a = document.createElement('a');
+					a.href = "/r/" + keys[i];
+					a.textContent = keys[i];
+					//console.log(rLink);
+					li.appendChild(a);
 
-				const li = document.createElement('li');
-				const a = document.createElement('a');
-				a.href = "/r/" + keys[i];
-				a.textContent = keys[i];
-				//console.log(rLink);
-				li.appendChild(a);
-
-				this.listRoomsEl.append(li);
+					this.listRoomsEl.append(li);	
+				}					
 			}
 		});
 	}
@@ -89,4 +91,8 @@ class MainRoom {
 	}
 }
 
-window.addEventListener('load', () => new MainRoom());
+//window.addEventListener('load', () => new MainRoom());
+//
+$(document).ready(function(){
+	new MainRoom();
+});

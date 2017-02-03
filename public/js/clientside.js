@@ -7,6 +7,7 @@ class ClientSide {
 		this.socket = socket;
 		this.room = room;
 
+		this.body = $('body');
 		this.altNameForm =  $('#form-alterar-name');
 		this.sendMessageForm = $('#form-enviar-mensaje');
 		this.mensajeEl = $('#mensaje');
@@ -45,19 +46,21 @@ class ClientSide {
 	}
 
 	submitSendMessage(){
-		this.sendMessageForm.submit( () => {
+
+		this.body.on('submit', this.sendMessageForm , () => {
+			console.log('submit send message');
 			let message = this.mensajeEl.val();
-			socket.emit('send message', {message: message, room: room});
+			this.socket.emit('send message', {message: message, room: room});
 			this.mensajeEl.val('').focus();
 			return false;
-		});
+		}) ;
 	}
 }
 
 //window.addEventListener('load', () => new ClientSide() );
-$(document).ready(function(){
+//$(document).ready(function(){
 	new ClientSide();	
-});
+//});
 
 /*
 $(function(){
